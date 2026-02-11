@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green.boardauth.application.board.BoardMapper">
+  <!--
+  useGeneratedKeys: insert하고 바로pk값 가저오는 기능
+  keyProperty: pk값을 담을 멥버 필드명
+  -->
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO board
+           SET title = #{title}
+             , contents = #{contents}
+             , user_id = #{userId}
+    </insert>
+
+    <select id="findAll">
+        SELECT b.id, b.title, b.created_at, u.nm
+        FROM board b
+        JOIN user u
+        ON b.user_id = u.id
+        <if test = "searchText != null and searchText !='' ">
+            WHERE b.title LIKE '%${searchText}%'
+               OR b.contents LIKE '%${searchText}%'
+        </if>
+        ORDER BY b.id DESC
+        LIMIT #{startIdx}, #{size}
+    </select>
+    
+    <select id="findMaxPage">
+        SELECT ceil(COUNT(1)/#{size})
+        FROM board
+        <if test = "searchText != null and searchText !='' ">
+           WHERE title LIKE '%${searchText}%'
+             OR contents LIKE '%${searchText}%'
+        </if>
+
+    </select>
+    <select id="findList">
+        SELECT b.id, b.user_id ,b.title, b.contents, b.created_at, u.nm
+        FROM board b
+        JOIN user u
+        ON b.user_id = u.id
+        WHERE b.id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        DELETE FROM board
+        WHERE id = #{id}
+        AND user_id = #{signedUserId}
+    </delete>
+
+
+
+</mapper>
