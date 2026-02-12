@@ -41,6 +41,12 @@ public class BoardController {
         int result =boardService.getBoardMaxPage(req);
         return new ResultResponse<>(String.format("maxPage:%d",result), result);
     }
+    @GetMapping("related_search")
+    public ResultResponse<?> getBoardSearch(@RequestParam("search_text") String searchText){
+        List<String> search = boardService.getBoardSearch(searchText);
+        return new ResultResponse<>(String.format("%d rows", search.size()), search);
+    }
+
 
     @GetMapping("{id}")
     public BoardGetListRes getBoard(@PathVariable long id){
@@ -49,8 +55,12 @@ public class BoardController {
     }
 
     @PutMapping
-    public ResultResponse<?> putBoard (@RequestBody BoardPostReq req) {
-       return boardService.putBoard(req);
+    public ResultResponse<?> putBoard(@AuthenticationPrincipal UserPrincipal userPrincipal
+            , @RequestBody BoardPostPutReq req) {
+        req.setUserId(userPrincipal.getSignedUserId());
+        log.info("req: {}", req);
+        boardService.putBoard(req);
+        return new ResultResponse<>("수정 성공", req.getId());
     }
 
     @DeleteMapping

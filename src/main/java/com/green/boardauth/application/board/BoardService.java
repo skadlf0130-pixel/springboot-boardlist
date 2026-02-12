@@ -25,10 +25,13 @@ public class BoardService {
     public BoardGetListRes getBoard(long id){
         return boardMapper.findList(id);
     }
-    public  int putBoard(BoardPostReq req){
-        return boardMapper.update(req);
+    public void putBoard(BoardPostPutReq req) {
+        boardMapper.update(req);
     }
     public int delBoard(BoardDelReq req) {
         return boardMapper.deleteById(req);
+    }
+    public List<String > getBoardSearch(String searchText){
+        return boardMapper.searchTitle(searchText);
     }
 }

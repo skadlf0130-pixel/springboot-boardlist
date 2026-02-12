@@ -11,7 +11,10 @@ public interface BoardMapper {
     List<BoardGetRes> findAll(BoardGetReq req);
     int findMaxPage(BoardGetMaxPageReq req);
     BoardGetListRes findList(long id);
-    int update(BoardPostReq req);
+    void update(BoardPostPutReq req);
     int deleteById(BoardDelReq req);
+    List<String > searchTitle(String searchText);
+
+
 
 }
